@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación Técnica | Wavii</title>
+    <meta name="description" content="Documentación técnica y guías de despliegue del proyecto Wavii.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo" style="text-decoration: none;">
+                <ion-icon name="musical-notes"></ion-icon>
+                <span>Wavii</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html#features">Características</a></li>
+                <li><a href="index.html#arquitectura">Arquitectura</a></li>
+                <li><a href="memoria.html">Memoria</a></li>
+            </ul>
+            <a href="https://github.com/Wavii-Project/wavii-app" target="_blank" class="btn btn-outline">Ver en GitHub</a>
+        </div>
+    </nav>
+
+    <!-- Article Hero -->
+    <header class="article-hero">
+        <div class="container">
+            <h1>Documentación Técnica</h1>
+            <p>Guía de arquitectura, requisitos y despliegue de Wavii.</p>
+        </div>
+    </header>
+
+    <!-- Article Content -->
+    <main class="article-content container">
+        <article class="article-card glass">
+            <h2>1. Arquitectura y Requisitos Previos</h2>
+            <p>El repo <code>wavii</code> está compuesto por varios servicios interconectados. Para el correcto funcionamiento en un entorno de desarrollo o producción, es necesario contar con los siguientes requisitos:</p>
+            <ul>
+                <li><strong>Frontend (Mobile):</strong> Node.js &gt;= 18, Expo CLI (SDK 54), Android Studio / Xcode para emuladores, y un dispositivo físico con Expo Go.</li>
+                <li><strong>Backend:</strong> Java 17, Maven 3.9+, Docker y Docker Compose.</li>
+                <li><strong>Infraestructura:</strong> Servidor VPS con Ubuntu 22.04 LTS (o superior), al menos 4 GB de RAM y 40 GB de disco. Nginx instalado como Proxy Inverso.</li>
+            </ul>
+
+            <h2>2. Configuración y Despliegue del Backend</h2>
+            <p>El backend está contenerizado para garantizar un entorno reproducible, compuesto por Spring Boot, PostgreSQL, MongoDB y Nginx.</p>
+            
+            <h3>Variables de Entorno</h3>
+            <p>En la ruta <code>wavii/docker/.env</code> deben definirse las credenciales. (Nota: No subir a control de versiones).</p>
+<pre><code>MAIL_USERNAME=correo@wavii.app
+MAIL_PASSWORD="password_de_aplicacion"
+TWILIO_ACCOUNT_SID=XXX
+TWILIO_AUTH_TOKEN=XXX
+TWILIO_FROM_NUMBER=+34XXXXXXXXX
+STRIPE_SECRET_KEY=sk_test_XXX
+STRIPE_WEBHOOK_SECRET=whsec_XXX
+JWT_SECRET=super_secret_key_base64
+ODOO_WEBHOOK_SECRET=wavii_odoo_secret_2026</code></pre>
+
+            <h3>Ejecución de los Contenedores</h3>
+            <p>Navega a la carpeta de Docker y ejecuta el compose:</p>
+<pre><code>cd wavii/docker
+docker compose up -d</code></pre>
+            <p>Servicios levantados:</p>
+            <ul>
+                <li><strong>postgres</strong>: Puerto 5432 (Base de datos relacional).</li>
+                <li><strong>mongodb</strong>: Puerto 27017 (Base de datos documental).</li>
+                <li><strong>backend</strong>: Puerto 8080 (Spring Boot 3 REST API).</li>
+                <li><strong>nginx</strong>: Puerto 80 (Enrutador y Proxy inverso interno).</li>
+            </ul>
+
+            <h2>3. Despliegue en VPS (Producción) con Dominio y HTTPS</h2>
+            <p>Para asegurar las comunicaciones según el estándar DPL, es necesario un dominio (e.g. <code>wavii.app</code>) y un certificado firmado (Let's Encrypt).</p>
+            <ol>
+                <li>Configurar los registros DNS tipo A del dominio apuntando a la IP pública del VPS.</li>
+                <li>Instalar Certbot en el servidor:
+                    <pre><code>sudo apt update
+sudo apt install certbot python3-certbot-nginx</code></pre>
+                </li>
+                <li>Generar el certificado HTTPS:
+                    <pre><code>sudo certbot --nginx -d wavii.app -d api.wavii.app</code></pre>
+                </li>
+                <li>Certbot actualizará automáticamente la configuración de Nginx para redirigir el tráfico del puerto 80 al 443.</li>
+            </ol>
+
+            <h2>4. Configuración del ERP Odoo (Módulo SSG)</h2>
+            <p>Odoo corre dentro del mismo ecosistema Docker en el puerto <code>8069</code>.</p>
+            <ol>
+                <li>Abre <code>http://localhost:8069</code> en el navegador (o <code>http://tu_dominio:8069</code>).</li>
+                <li>Crea la base de datos <code>wavii_odoo</code> con la contraseña de master definida como <code>wavii_admin_2026</code>.</li>
+                <li>Instala el módulo de <strong>Contabilidad</strong> y <strong>CRM</strong>.</li>
+                <li>Para la integración bidireccional, asegura que <code>ODOO_WEBHOOK_SECRET</code> coincide en el backend y en Odoo. Al aprobar un profesor, Odoo lanza una petición POST a <code>https://api.wavii.app/api/verification/odoo-webhook</code>.</li>
+            </ol>
+
+            <h2>5. Compilación y Ejecución del Frontend (Mobile)</h2>
+            <p>El frontend está desarrollado en React Native usando Expo SDK 54.</p>
+            
+            <h3>Ejecución en Modo Desarrollo</h3>
+            <p>El móvil y el ordenador deben estar en la misma red WiFi (o usar Tunnel).</p>
+<pre><code>cd wavii/frontend
+npm install
+# Asegúrate de actualizar la IP de API_BASE_URL en src/api/config.ts
+npx expo start -c</code></pre>
+            <p>Escanea el código QR desde la app de la cámara en iOS o desde la app <strong>Expo Go</strong> en Android.</p>
+
+            <h3>Compilación (Build) para Producción</h3>
+            <p>Para generar los binarios finales (APK/AAB para Android, IPA para iOS) y subirlos a las tiendas, se utiliza EAS (Expo Application Services).</p>
+<pre><code># Iniciar sesión en Expo
+npx eas login
+
+# Configurar el proyecto
+npx eas build:configure
+
+# Construir para Android
+npx eas build --platform android --profile production
+
+# Construir para iOS
+npx eas build --platform ios --profile production</code></pre>
+
+            <h2>6. Testing Unitario (Backend)</h2>
+            <p>La aplicación backend cuenta con una cobertura de test superior al 80% (JUnit 5 + Mockito). Para ejecutar las pruebas y generar el reporte JaCoCo:</p>
+<pre><code>cd wavii/backend
+mvn clean verify</code></pre>
+            <p>El reporte HTML estará disponible en <code>backend/target/site/jacoco/index.html</code>.</p>
+
+            <h2>7. Documentación de API (Swagger / OpenAPI)</h2>
+            <p>Toda la especificación de los endpoints REST, incluyendo esquemas de request/response, se genera automáticamente. Con el backend levantado, accede a:</p>
+            <ul>
+                <li>UI interactiva: <code>http://localhost:8080/swagger-ui.html</code></li>
+                <li>Esquema JSON: <code>http://localhost:8080/v3/api-docs</code></li>
+            </ul>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <ion-icon name="musical-notes"></ion-icon>
+                    <span>Wavii</span>
+                </div>
+                <p>Proyecto Intermodular 2DAM.<br>Desarrollo de Aplicaciones Multiplataforma.</p>
+                <div class="social-links">
+                    <a href="https://github.com/eduglezexp/wavii" aria-label="GitHub"><ion-icon name="logo-github"></ion-icon></a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Wavii. Todos los derechos reservados.</p>
+                <p>Green IT & ODS Aligned 🌍</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

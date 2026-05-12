@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memoria de Proyecto | Wavii</title>
+    <meta name="description" content="Memoria oficial del Proyecto Wavii. Desarrollo de Aplicaciones Multiplataforma.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo" style="text-decoration: none;">
+                <ion-icon name="musical-notes"></ion-icon>
+                <span>Wavii</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html#features">Características</a></li>
+                <li><a href="index.html#arquitectura">Arquitectura</a></li>
+                <li><a href="documentacion.html">Documentación Técnica</a></li>
+            </ul>
+            <a href="https://github.com/Wavii-Project/wavii-app" target="_blank" class="btn btn-outline">Ver en GitHub</a>
+        </div>
+    </nav>
+
+    <!-- Article Hero -->
+    <header class="article-hero">
+        <div class="container">
+            <h1>Memoria de Proyecto: Wavii</h1>
+            <p>Documentación oficial del Proyecto Intermodular para 2DAM.</p>
+        </div>
+    </header>
+
+    <!-- Article Content -->
+    <main class="article-content container">
+        <article class="article-card glass">
+            <h2>1. Introducción</h2>
+            <p>Wavii es una aplicación móvil multiplataforma de aprendizaje y práctica musical que conecta a estudiantes con profesores certificados, proporcionando herramientas interactivas impulsadas por la colaboración de la comunidad al compartir contenidos de aprendizaje. El presente documento detalla la memoria del Proyecto Intermodular para 2DAM.</p>
+
+            <h2>2. Contexto</h2>
+            <p>El aprendizaje musical tradicional suele estar limitado por barreras geográficas, de horarios y de alto coste. La digitalización ha impulsado soluciones de e-learning y aprendizaje autodidacta, pero pocas ofrecen una experiencia tan completa, conteninidos de acceso gratuito y seguimiento por parte de profesores homologados. Wavii nace en este contexto digital y móvil para cubrir esta carencia.</p>
+
+            <h2>3. Objetivo</h2>
+            <p>Desarrollar una solución integral (App Móvil + API Backend + ERP) que democratice el acceso a la educación musical, ofreciendo tanto aprendizaje autodidacta a través de ejercicios en la app como tutorización remota con profesores certificados.</p>
+
+            <h2>4. Problema o necesidad a resolver</h2>
+            <ol>
+                <li><strong>Acceso limitado a contenidos musicales:</strong> Falta de recursos educativos accesibles y de calidad a la hora de aprender música, especialmente en géneros menos convencionales o instrumentos menos populares.</li>
+                <li><strong>Falta de herramientas digitales accesibles y unificadas</strong> que combinen partituras, lecciones y feedback de la comunidad.</li>
+                <li><strong>Difusión para profesionales de la educación musical:</strong> Los profesores necesitan una plataforma integrada donde darse a conocer ente sus potenciales alumnos.</li>
+            </ol>
+
+            <h2>5. Tareas y Módulos Implicados (Arquitectura Técnica)</h2>
+            
+            <h3>Programación Multimedia y Dispositivos Móviles (PGL)</h3>
+            <ul>
+                <li><strong>Arquitectura y modularización:</strong> La aplicación móvil está desarrollada con React Native y Expo SDK 54, utilizando TypeScript estricto. Cuenta con una separación de componentes absoluta: <code>/api</code>, <code>/components</code>, <code>/context</code>, <code>/screens</code> y <code>/theme</code>.</li>
+                <li><strong>Navegación:</strong> Implementada con React Navigation v7. Cuenta con tres flujos protegidos: <code>AuthNavigator</code> (pantallas públicas), <code>OnboardingNavigator</code> y <code>AppNavigator</code>.</li>
+                <li><strong>Autenticación:</strong> Flujo completo de registro, inicio de sesión y cierre de sesión. El token JWT se almacena de forma segura usando <code>expo-secure-store</code>.</li>
+                <li><strong>Base de Datos Local (Modo Offline):</strong> Usando <code>AsyncStorage</code> y Zustand persistente. Los usuarios pueden modificar sus preferencias, editar su perfil o revisar lecciones en caché sin conexión.</li>
+                <li><strong>Componentes de Edición (CRUD):</strong> Interfaces reactivas para gestionar el perfil, contenido subido y preferencias musicales.</li>
+                <li><strong>Temas:</strong> Detección automática del tema del sistema mediante un <code>ThemeContext</code>, adaptando toda la paleta de colores.</li>
+                <li><strong>Hardware y Sensores:</strong> Uso de <strong>GPS</strong> para sugerir profesores certificados en la zona más cercana y calcular rutas.</li>
+            </ul>
+
+            <h3>Acceso a Datos (AED) y Programación de Servicios (PGV)</h3>
+            <ul>
+                <li><strong>API REST & DB:</strong> Desarrollado con Spring Boot 3 y Java 17. Usa PostgreSQL para la capa relacional y MongoDB para la documental.</li>
+                <li><strong>Documentación de Código y API:</strong> API REST documentada exhaustivamente (>80%) con <strong>Swagger/OpenAPI</strong>.</li>
+                <li><strong>Servicios SOAP y REST:</strong> Se han construido múltiples servicios REST completos y 5 servicios SOAP para integración con sistemas bancarios e instituciones gubernamentales.</li>
+                <li><strong>Testing Unitario:</strong> Cobertura superior al <strong>80%</strong> (con JaCoCo, Mockito y JUnit 5).</li>
+                <li><strong>Securización:</strong> Toda la API protegida usando Spring Security y JSON Web Tokens (JJWT).</li>
+            </ul>
+
+            <h3>Desarrollo de Interfaces (DAD)</h3>
+            <ul>
+                <li><strong>Diseño Estético:</strong> UI basada en la tipografía Nunito y colores corporativos (<code>#FF7A00</code>).</li>
+                <li><strong>Accesibilidad y Usabilidad:</strong> Aplicación estricta de las <strong>Heurísticas de Nielsen</strong> y la norma <strong>ISO 9241</strong>. Uso de etiquetas de accesibilidad.</li>
+            </ul>
+
+            <h3>Despliegue de Aplicaciones Web (DPL)</h3>
+            <ul>
+                <li><strong>Dominio y HTTPS:</strong> Backend desplegado bajo el dominio registrado <code>wavii.app</code>.</li>
+                <li><strong>Certificados CA:</strong> Tráfico protegido mediante <strong>HTTPS</strong> con certificados emitidos por <strong>Let's Encrypt</strong>.</li>
+            </ul>
+
+            <h2>6. Sistema de Gestión Empresarial (SSG)</h2>
+            <p>Se ha integrado el ERP <strong>Odoo v17</strong> para la gestión interna de Wavii:</p>
+            <ol>
+                <li><strong>Integración CRM:</strong> Gestión de leads de alumnos y captación de profesores.</li>
+                <li><strong>Formularios e Informes:</strong> Informes propios de facturación y contabilidad.</li>
+                <li><strong>Componentes/Plugins Propios:</strong> Módulo custom en Odoo que expone un Webhook (<code>/api/verification/odoo-webhook</code>) que se comunica con el Backend para aprobar o rechazar profesores.</li>
+            </ol>
+
+            <h2>7. Plan de Negocio y Sostenibilidad</h2>
+
+            <h3>Viabilidad Económica (EMR)</h3>
+            <ul>
+                <li><strong>Modelo de Negocio (SaaS Freemium):</strong> Tier FREE (básico), PLUS (pasarela Stripe) y SCHOLAR (precio educativo).</li>
+                <li><strong>Estrategia de Financiación:</strong> Bootstrapping inicial y captación de fondos europeos (NextGeneration) y Business Angels del sector EdTech en el escalado.</li>
+            </ul>
+
+            <h3>Plan de Marketing y Posicionamiento</h3>
+            <p>Estrategia fundamentada en las 7Ps y técnicas de posicionamiento:</p>
+            <ul>
+                <li><strong>Producto:</strong> Plataforma integral de e-learning musical (SaaS) con feedback en tiempo real.</li>
+                <li><strong>Precio:</strong> Estrategia Freemium.</li>
+                <li><strong>Promoción:</strong> Paid Media (Google/Meta Ads), Influencers, Owned Media y PR.</li>
+                <li><strong>Comunidad:</strong> Fuerte sentido de comunidad (Growth Loops) que fomenta el Word of Mouth.</li>
+                <li><strong>ASO y SEO:</strong> Optimización de keywords, capturas de pantalla, marcado semántico y metaetiquetas Open Graph.</li>
+            </ul>
+
+            <h3>Sostenibilidad Social y Ética</h3>
+            <ul>
+                <li><strong>RGPD y Privacidad:</strong> Cumplimiento estricto de la ley europea. Anonimización de datos y consentimiento explícito.</li>
+                <li><strong>Inclusión y Accesibilidad:</strong> Alineado con WCAG 2.2.</li>
+            </ul>
+
+            <h3>Sostenibilidad Ambiental (Green IT)</h3>
+            <ul>
+                <li><strong>Green Coding:</strong> Optimización de payloads JSON y caché eficiente de audio.</li>
+                <li><strong>Infraestructura Eco-eficiente:</strong> Servidores en centros de datos con certificado de 100% energías renovables (Green Hosting).</li>
+            </ul>
+
+            <h3>Alineación con los Objetivos de Desarrollo Sostenible (ODS)</h3>
+            <ul>
+                <li><strong>ODS 4:</strong> Educación de Calidad.</li>
+                <li><strong>ODS 8:</strong> Trabajo Decente y Crecimiento Económico.</li>
+                <li><strong>ODS 10:</strong> Reducción de las Desigualdades.</li>
+                <li><strong>ODS 12:</strong> Producción y Consumo Responsables.</li>
+            </ul>
+
+            <h3>Impactos, Riesgos y Oportunidades (IRO) y Análisis de Materialidad</h3>
+            <ol>
+                <li><strong>Impacto Positivo:</strong> Democratización del acceso educativo. (Material)</li>
+                <li><strong>Riesgo:</strong> Brecha digital. (Material)</li>
+                <li><strong>Oportunidad:</strong> Integración institucional (B2B). (Material)</li>
+                <li><strong>Riesgo:</strong> Ciberseguridad y Privacidad de Datos. (Material)</li>
+                <li><strong>Impacto Ambiental Negativo:</strong> Huella de carbono digital mitigada por Green Hosting. (No Material)</li>
+            </ol>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <ion-icon name="musical-notes"></ion-icon>
+                    <span>Wavii</span>
+                </div>
+                <p>Proyecto Intermodular 2DAM.<br>Desarrollo de Aplicaciones Multiplataforma.</p>
+                <div class="social-links">
+                    <a href="https://github.com/Wavii-Project/wavii-app" aria-label="GitHub"><ion-icon name="logo-github"></ion-icon></a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Wavii. Todos los derechos reservados.</p>
+                <p>Green IT & ODS Aligned 🌍</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
